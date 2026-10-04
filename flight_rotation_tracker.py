@@ -133,7 +133,12 @@ def fetch_google_flights(client, origin, dest, date_str, curr="GBP"):
         if resp.status_code != 200 or "ds:1" not in resp.text:
             return None
         
-        flights = parse_gf(resp.text)
+        try:
+            flights = parse_gf(resp.text)
+        except (IndexError, TypeError, KeyError, AttributeError):
+            # Brak połączeń lub pusty zestaw danych Google Flights dla tej daty
+            return None
+
         if not flights:
             return None
             
